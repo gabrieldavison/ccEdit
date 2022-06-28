@@ -1,10 +1,19 @@
 # TODO
 
+
 - Work out how you want to do history / rollback
     - This should be easy until you want to add section evaluation (Then you need a working file that has commands appended to it)
 
-- swap out stack for a queue 
+- Come up with list of simplified api for threejs
+    - Start with spawning / manipulating objects
+    - Work out the best way to make mutable changes to the render loop.
+    - Think about camera manipulation
 
-- Add the eval section shortcut
-    - I think for now I can just have everything send the full buffer
-    - Will need to see how this plays out the the three scene as it is very stateful
+- API for easy midi binding / unbinding
+
+- flesh out temporal api with new funcs
+
+- make the threejs api more ergonomic
+
+- get midi hooked up
+

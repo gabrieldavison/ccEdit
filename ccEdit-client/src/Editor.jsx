@@ -1,5 +1,7 @@
 import "./index.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { vim } from "@replit/codemirror-vim";
+
 import { useCodeMirror } from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { keymap } from "@codemirror/view";
@@ -25,8 +27,8 @@ export default function ({
     return s;
   };
 
-  const queueSelection = () => {
-    pushQueue(getSelection());
+  const queueBuffer = () => {
+    pushQueue(getBuffer());
   };
 
   const broadcast = (s) => {
@@ -34,6 +36,24 @@ export default function ({
     send(s, previewMode);
   };
 
+  const getBlock = () => {
+    const getCursorPosition = () => view.state.selection.ranges[0].from;
+    let pos = getCursorPosition();
+    let startLine = view.state.doc.lineAt(pos).number;
+    let endLine = view.state.doc.lineAt(pos).number;
+    while (startLine > 1 && view.state.doc.line(startLine).text !== "") {
+      startLine--;
+    }
+    const numLines = view.state.doc.text.length;
+    while (endLine < numLines && view.state.doc.line(endLine).text !== "") {
+      endLine++;
+    }
+    const s = view.state.sliceDoc(
+      view.state.doc.line(startLine).from,
+      view.state.doc.line(endLine).to
+    );
+    return s;
+  };
   // Keymaps
   const myKeys = () =>
     keymap.of([
@@ -48,34 +68,41 @@ export default function ({
       {
         key: "Ctrl-Enter",
         run() {
-          broadcast(getSelection());
+          // broadcast(getSelection());
+          broadcast(getBlock());
         },
       },
       // Queue Selection
       {
-        key: "Ctrl-q",
+        key: "Ctrl-,",
         run() {
-          queueSelection();
+          pushQueue(getBlock());
         },
       },
       {
-        key: "Ctrl-w",
+        key: "Ctrl-.",
         run() {
           send(popQueue());
         },
       },
       {
-        key: "Escape",
+        key: "Ctrl-Escape",
         run() {
           togglePreviewMode();
         },
       },
     ]);
 
+  const code = `console.log("one")
+
+console.log("two")
+console.log("three")`;
+
   const editor = useRef();
   const { setContainer, view } = useCodeMirror({
     container: editor.current,
-    extensions: [javascript(), myKeys()],
+    extensions: [javascript(), vim(), myKeys()],
+    value: code,
   });
 
   useEffect(() => {
@@ -87,6 +114,7 @@ export default function ({
   return (
     <div>
       <div ref={editor} />
+      <button onClick={getBlock}>log block</button>
     </div>
   );
 }

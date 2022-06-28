@@ -1,0 +1,1 @@
+let lastTick = Date.now();
