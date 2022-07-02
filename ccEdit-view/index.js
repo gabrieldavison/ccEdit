@@ -1,5 +1,7 @@
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+// import mNagyBoats from "./models/nagy boats.glb";
 
 const isPreview = window.name === "preview";
 
@@ -38,7 +40,7 @@ camera.position.set(0, 0, 3);
 
 //Lighting
 
-const light = new THREE.PointLight("white", 0.3, 0);
+const light = new THREE.PointLight("white", 0.8, 0);
 light.position.set(-0.3, -0.3, 2);
 scene.add(light);
 
@@ -47,26 +49,36 @@ scene.add(light);
 // const material = new THREE.MeshPhongMaterial({});
 // const cube = new THREE.Mesh(geometry, material);
 // scene.add(cube);
-const cube = (size, x, y, z) => {
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshPhongMaterial({});
-  const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-  cube.scale.set(size, size, size);
-  cube.position.set(x, y, z);
-  return cube;
-};
+// const cube = (size, x, y, z) => {
+//   const geometry = new THREE.BoxGeometry(1, 1, 1);
+//   const material = new THREE.MeshPhongMaterial({});
+//   const cube = new THREE.Mesh(geometry, material);
+//   scene.add(cube);
+//   cube.scale.set(size, size, size);
+//   cube.position.set(x, y, z);
+//   return cube;
+// };
 
 // const cube = addCube(1, 0, 0, 0);
 
 window.rot = 0.01;
 
+const objects = {};
+const updateObj = (obj) => {
+  if (obj.updatePosition) obj.updatePosition(obj);
+  if (obj.updateRotation) obj.updateRotation(obj);
+  if (obj.updateScale) obj.updateScale(obj);
+};
 const renderQueue = [];
 //// ANIMATION LOOP
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   renderQueue.forEach((f) => f());
+  for (let o in objects) {
+    const currentObject = objects[o];
+    if (currentObject.update) currentObject.update(currentObject);
+  }
 }
 animate();
 const addR = (v) => {
@@ -76,8 +88,6 @@ const addR = (v) => {
     renderQueue.push(v);
   }
 };
-// addR(() => (cube.rotation.x += window.rot));
-// addR(() => (cube.rotation.y += window.rot));
 
 //LIB
 
@@ -98,14 +108,14 @@ const rf = (min, max) => m.randFloat(min, max);
 
 // Plug into hydra
 s0.init({ src: document.getElementById("three-canvas") });
-src(s0).modulate(osc(10)).out();
+src(s0).out();
 
 const socket = io("http://localhost:3001");
-socket.on("viewMessage", (msg) => {
+socket.on("viewMessage", async (msg) => {
   const { preview, message } = msg;
   if ((preview && isPreview) || !preview) {
     try {
-      eval(message);
+      eval(`(async () => {${message}})()`);
       errorDisplay.innerText = "";
     } catch (e) {
       isPreview ? (errorDisplay.innerText = e) : console.log(e);
@@ -113,15 +123,9 @@ socket.on("viewMessage", (msg) => {
   }
 });
 
-// Temporal Stuff
+// TEMPORAL
 
-// temporal is like 3js render loop
-// an array (that is visualized like the stack)
-// every tick the array is executed
-// each func is passed current tick and last tick
-// need to decide whether this live in the editor or the view (view will be easier to start)
-
-const timeFunctions = {};
+let timeFunctions = {};
 let counter = 0;
 let then = 0;
 function timer() {
@@ -140,18 +144,15 @@ const addTimeFunc = (name, func) => {
   timeFunctions[name] = { func, name };
   counter += 1;
 };
-/*
-function oscillator(time, frequency = 1, amplitude = 1, phase = 0, offset = 0){
-    return Math.sin(time * frequency * Math.PI * 2 + phase * Math.PI * 2) * amplitude + offset; 
-}
-*/
+
 const t = {};
 t.osc = (v, mag, freq, name = counter) => {
   const oldV = w[v];
   if (timeFunctions[name]) delete timeFunctions[name];
   const fn = (_, now) => {
     const s = Math.sin((now / 1000) * freq * Math.PI * 2) * mag;
-    w[v] = oldV + s;
+    console.log(oldV + Number(s.toFixed(2)));
+    w[v] = oldV + Number(s.toFixed(2));
   };
   addTimeFunc(name, fn);
 };
@@ -168,10 +169,11 @@ t.ramp = (v, target, duration, name = counter) => {
       return delete timeFunctions[me.name];
     // work out how much time has passed
     const timePassed = now - then;
+    // console.log(timePassed);
     // work out what % this is of duration
     const segment = timePassed / duration;
     const inc = difference * segment;
-    w[v] += inc;
+    w[v] += Number(inc.toFixed(3));
 
     // work out how much to add to v
   };
@@ -184,5 +186,106 @@ t.stop = (name) => {
   }
 };
 
-// need to turn timeArr into an object
-// that way they can be set to a variable and killed
+t.kill = () => {
+  timeFunctions = {};
+};
+
+//////       TEMPORAL VARIABLES
+/*
+- At the moment these are just a poor mans atom.
+- Implementing my own atom might be adviseable and will make the API cleaner.
+  - E.g. for temporal functions I wont have to pass string variables. I could pass the atom instead.
+*/
+
+w.a = 0;
+w.b = 0;
+w.c = 0;
+w.d = 0;
+w.e = 0;
+w.f = 0;
+const wa = (v = null) => (v ? (w.a = v) : () => w.a);
+const wb = (v = null) => (v ? (w.b = v) : () => w.b);
+const wc = (v = null) => (v ? (w.c = v) : () => w.c);
+const wd = (v = null) => (v ? (w.d = v) : () => w.d);
+const we = (v = null) => (v ? (w.e = v) : () => w.e);
+const wf = (v = null) => (v ? (w.f = v) : () => w.f);
+
+//////// 3D Constuctors
+let objectCounter = 0;
+
+const addObject = (o) => {
+  objects[objectCounter] = o;
+  objectCounter += 1;
+};
+
+const cube = (size, x, y, z) => {
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshPhongMaterial({});
+  const c = new THREE.Mesh(geometry, material);
+  scene.add(c);
+  c.scale.set(size, size, size);
+  c.position.set(x, y, z);
+
+  const obj = {
+    t: c,
+    updatePosition: null,
+    updateRotation: null,
+    updateScale: null,
+  };
+  objects;
+
+  return obj;
+};
+
+// MODELS
+
+// const glbMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+// const loader = new GLTFLoader();
+// const mNagyBoats = loader.load("./models/nagy-boats.glb", (glb) => {
+//   const obj = glb.scene;
+//   scene.add(obj);
+//   obj.traverse(function (child) {
+//     if (child instanceof THREE.Mesh) {
+//       child.material = glbMaterial;
+//     }
+//   });
+
+//   // obj.scale.set(0.6, 0.6, 0.6);
+//   obj.rotation.x = Math.PI / 2;
+//   obj.rotation.y = Math.PI / 2;
+// });
+
+const testglb = "./models/nagy-boats.glb";
+
+const glb = async (name, initFn = () => {}) => {
+  const glbMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+
+  const loader = new GLTFLoader();
+  const model = await loader.loadAsync(name);
+  const obj = model.scene;
+  scene.add(obj);
+  obj.traverse(function (child) {
+    if (child instanceof THREE.Mesh) {
+      child.material = glbMaterial;
+    }
+  });
+  initFn(obj);
+  // obj.rotation.x = Math.PI / 2;
+  // obj.rotation.y = Math.PI / 2;
+
+  const o = {
+    t: obj,
+    update: null,
+  };
+  addObject(o);
+  return o;
+};
+
+const remove = (obj) => scene.remove(obj.t);
+
+// w.myObj = await glb(testglb);
+
+// w.myObj.update = (obj) => {
+//   // obj.t.rotation.x += 0.001;
+//   // console.log(obj);
+// };
