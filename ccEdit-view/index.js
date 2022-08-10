@@ -1,7 +1,6 @@
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-// import mNagyBoats from "./models/nagy boats.glb";
 
 const isPreview = window.name === "preview";
 
@@ -44,32 +43,9 @@ const light = new THREE.PointLight("white", 0.8, 0);
 light.position.set(-0.3, -0.3, 2);
 scene.add(light);
 
-// Add cube
-// const geometry = new THREE.BoxGeometry(1, 1, 1);
-// const material = new THREE.MeshPhongMaterial({});
-// const cube = new THREE.Mesh(geometry, material);
-// scene.add(cube);
-// const cube = (size, x, y, z) => {
-//   const geometry = new THREE.BoxGeometry(1, 1, 1);
-//   const material = new THREE.MeshPhongMaterial({});
-//   const cube = new THREE.Mesh(geometry, material);
-//   scene.add(cube);
-//   cube.scale.set(size, size, size);
-//   cube.position.set(x, y, z);
-//   return cube;
-// };
-
-// const cube = addCube(1, 0, 0, 0);
-
-window.rot = 0.01;
-
 const objects = {};
-const updateObj = (obj) => {
-  if (obj.updatePosition) obj.updatePosition(obj);
-  if (obj.updateRotation) obj.updateRotation(obj);
-  if (obj.updateScale) obj.updateScale(obj);
-};
 const renderQueue = [];
+
 //// ANIMATION LOOP
 function animate() {
   requestAnimationFrame(animate);
@@ -101,6 +77,7 @@ const r = () => location.reload();
 const doTimes = (n, f) => {
   for (let i = 0; i < n; i++) f();
 };
+
 const a = (n) => Array(n).fill(null);
 
 // Maths
@@ -238,23 +215,6 @@ const cube = (size, x, y, z) => {
 };
 
 // MODELS
-
-// const glbMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
-// const loader = new GLTFLoader();
-// const mNagyBoats = loader.load("./models/nagy-boats.glb", (glb) => {
-//   const obj = glb.scene;
-//   scene.add(obj);
-//   obj.traverse(function (child) {
-//     if (child instanceof THREE.Mesh) {
-//       child.material = glbMaterial;
-//     }
-//   });
-
-//   // obj.scale.set(0.6, 0.6, 0.6);
-//   obj.rotation.x = Math.PI / 2;
-//   obj.rotation.y = Math.PI / 2;
-// });
-
 const testglb = "./models/nagy-boats.glb";
 
 const glb = async (name, initFn = () => {}) => {
@@ -270,8 +230,6 @@ const glb = async (name, initFn = () => {}) => {
     }
   });
   initFn(obj);
-  // obj.rotation.x = Math.PI / 2;
-  // obj.rotation.y = Math.PI / 2;
 
   const o = {
     t: obj,
@@ -283,9 +241,9 @@ const glb = async (name, initFn = () => {}) => {
 
 const remove = (obj) => scene.remove(obj.t);
 
-// w.myObj = await glb(testglb);
+w.myObj = await glb(testglb);
 
-// w.myObj.update = (obj) => {
-//   // obj.t.rotation.x += 0.001;
-//   // console.log(obj);
-// };
+w.myObj.update = (obj) => {
+  obj.t.rotation.x += 0.001;
+  console.log(obj);
+};

@@ -7,6 +7,10 @@ import { javascript } from "@codemirror/lang-javascript";
 import { keymap } from "@codemirror/view";
 import useSocket from "./useSocket";
 
+const getFromLocalStorage = () => {
+  return localStorage.getItem("editorContent");
+};
+
 export default function ({
   pushQueue,
   popQueue,
@@ -93,10 +97,7 @@ export default function ({
       },
     ]);
 
-  const code = `console.log("one")
-
-console.log("two")
-console.log("three")`;
+  const code = getFromLocalStorage();
 
   const editor = useRef();
   const { setContainer, view } = useCodeMirror({

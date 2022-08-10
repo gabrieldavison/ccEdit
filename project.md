@@ -17,3 +17,7 @@
 
 - get midi hooked up
 
+- fix temporal features
+
+- get editor persisting
+

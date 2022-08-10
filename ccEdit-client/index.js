@@ -5,7 +5,14 @@ import { keymap } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
 const socket = io("http://localhost:3001");
-console.log(socket);
+
+const saveToLocalStorage = (s) => {
+  localStorage.setItem("editorContent", s);
+};
+
+const getFromLocalStorage = () => {
+  return localStorage.getItem("editorContent");
+};
 
 const evalBufferKey = () =>
   keymap.of([
@@ -48,8 +55,8 @@ const getBuffer = () => {
 };
 
 const send = (s, preview = false) => {
-  console.log(s);
   socket.emit("editorMessage", { preview: preview, message: s });
+  saveToLocalStorage(s);
 };
 
 // set it up so everything  goes to preview first then to queue then to main
@@ -65,6 +72,5 @@ postButton.onclick = () => send(getBuffer(), false);
 postPreviewButton.onclick = () => send(getBuffer(), true);
 queueButton.onclick = () => {
   queue.push(getSelection());
-  console.log(queue);
 };
 triggerButton.onclick = () => send(queue.pop(), false);

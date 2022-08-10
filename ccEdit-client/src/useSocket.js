@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
+
+const saveToLocalStorage = (s) => {
+  localStorage.setItem("editorContent", s);
+};
+
 export default function () {
   const [socket, setSocket] = useState(null);
   useEffect(() => {
@@ -10,6 +15,7 @@ export default function () {
   }, [setSocket]);
   const send = (s, preview = false) => {
     socket.emit("editorMessage", { preview: preview, message: s });
+    saveToLocalStorage(s);
   };
   return { socket, send };
 }
