@@ -1,0 +1,17 @@
+/// Rotating Cube
+
+w.cbe = cube(100,0,0,-100)
+
+w.cbe.update = o => {
+  o.t.rotation.x += 0.001
+  o.t.rotation.y += 0.0005
+}
+
+
+/// Big Spinning 3D img
+
+w.myObj = await glb(testglb);
+
+w.myObj.update = (obj) => {
+  obj.t.rotation.x += 0.001;
+};

@@ -35,8 +35,13 @@ export default function ({
     pushQueue(getBuffer());
   };
 
+  const saveToLocalStorage = (s) => {
+    localStorage.setItem("editorContent", s);
+  };
+
   const broadcast = (s) => {
     console.log(previewMode);
+    saveToLocalStorage(getBuffer());
     send(s, previewMode);
   };
 
