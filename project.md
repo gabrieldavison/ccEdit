@@ -13,6 +13,8 @@
 - fix temporal features
     - ?think these are actually working now and it's the api that's a bit wonky.
 
+- Replace all url imports with npm ones or download them into lib folder
+
 ## Wishlist
 
 - A way that makes managing the threejs scene more ergonomic

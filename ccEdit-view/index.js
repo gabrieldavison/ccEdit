@@ -3,7 +3,19 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import { wa, wb, wc, wd, we, wf, t } from "./temporal";
-import { addObject, cube, glb, remove, m } from "./3d";
+import {
+  addObject,
+  cube,
+  rect,
+  circle,
+  plane,
+  sphere,
+  glb,
+  remove,
+  m,
+} from "./3d";
+
+import { setup, getSlider, setButton } from "./midi";
 
 const isPreview = window.name === "preview";
 
@@ -56,4 +68,5 @@ socket.on("viewMessage", async (msg) => {
   }
 });
 
-//////// 3D Constuctors
+//// Midi Setup
+setup();

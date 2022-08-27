@@ -28,6 +28,7 @@ export default function () {
       <iframe
         src="http://localhost:3002/"
         name="preview"
+        allow="midi"
         className="w-[600px] h-[300px] m-auto"
       ></iframe>
       {previewMode ? <h1>PREVIEW</h1> : <h1>LIVE</h1>}

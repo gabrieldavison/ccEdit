@@ -15,3 +15,22 @@ w.myObj = await glb(testglb);
 w.myObj.update = (obj) => {
   obj.t.rotation.x += 0.001;
 };
+
+//////////////////////////
+
+w.cbe = cube(0,0,-100, 100)
+
+w.cbe.update = o => {
+  o.t.rotation.x += 0.01
+  o.t.rotation.y += 0.01
+}
+
+w.cbe.t.position.z = -200
+
+wa(10)
+
+src(s0).repeatX(4).repeatY(4).diff(src(o0)).out()
+
+osc(wa()).out()
+
+///////////////////////

@@ -50,7 +50,6 @@ const addR = (v) => {
   }
 };
 
-//////// 3D Constuctors
 // Cant remember why I put the object counter in here or what it's actually doing?
 let objectCounter = 0;
 
@@ -59,23 +58,66 @@ const addObject = (o) => {
   objectCounter += 1;
 };
 
-const cube = (size, x, y, z) => {
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshPhongMaterial({});
-  const c = new THREE.Mesh(geometry, material);
-  scene.add(c);
-  c.scale.set(size, size, size);
-  c.position.set(x, y, z);
-
+//////// 3D primitives
+const addPrimitive = (
+  { x, y, z },
+  geometry,
+  geometryParams = [],
+  material = THREE.MeshPhongMaterial,
+  materialParams = {}
+) => {
+  const geom = new geometry(...geometryParams);
+  const mat = new material(materialParams);
+  const objReference = new THREE.Mesh(geom, mat);
+  scene.add(objReference);
+  objReference.position.set(x, y, z);
   const o = {
-    t: c,
+    t: objReference,
     update: null,
   };
   addObject(o);
   return o;
 };
 
-// MODELS
+const cube = (x, y, z, size) => {
+  return addPrimitive({ x, y, z }, THREE.BoxGeometry, [size, size, size]);
+};
+
+const rect = (x, y, z, width, height, depth) => {
+  return addPrimitive({ x, y, z }, THREE.BoxGeometry, [width, height, depth]);
+};
+
+const circle = (x, y, z, radius, segments = 20) => {
+  return addPrimitive({ x, y, z }, THREE.CircleGeometry, [radius, segments]);
+};
+
+const plane = (
+  x,
+  y,
+  z,
+  width,
+  height,
+  widthSegments = 5,
+  heightSegments = 5
+) => {
+  return addPrimitive({ x, y, z }, THREE.PlaneGeometry, [
+    width,
+    height,
+    widthSegments,
+    heightSegments,
+  ]);
+};
+
+const sphere = (x, y, z, radius, segments = 20) => {
+  return addPrimitive(
+    { x, y, z },
+    THREE.SphereGeometry,
+    [radius, 20],
+    THREE.MeshPhongMaterial
+  );
+};
+
+// glb display
 
 const glb = async (name, initFn = () => {}) => {
   const glbMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
@@ -103,4 +145,4 @@ const remove = (obj) => scene.remove(obj.t);
 
 const m = THREE.MathUtils;
 
-export { addObject, cube, glb, remove, m };
+export { addObject, cube, rect, circle, plane, sphere, glb, remove, m };
