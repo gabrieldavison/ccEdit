@@ -38,6 +38,7 @@ function animate() {
   renderQueue.forEach((f) => f());
   for (let o in objects) {
     const currentObject = objects[o];
+    if (currentObject._update) currentObject._update();
     if (currentObject.update) currentObject.update(currentObject);
   }
 }
@@ -108,6 +109,40 @@ const plane = (
   ]);
 };
 
+const canvasPlane = (
+  x,
+  y,
+  z,
+  width,
+  height,
+  widthSegments = 5,
+  heightSegments = 5
+) => {
+  const geom = new THREE.PlaneGeometry(
+    width,
+    height,
+    widthSegments,
+    heightSegments
+  );
+  const texture = new THREE.CanvasTexture(
+    document.getElementById("defaultCanvas0")
+  );
+  const mat = new THREE.MeshBasicMaterial({
+    map: texture,
+  });
+  const objReference = new THREE.Mesh(geom, mat);
+  scene.add(objReference);
+  objReference.position.set(x, y, z);
+  texture.needsUpdate = true;
+  const o = {
+    t: objReference,
+    _update: () => (texture.needsUpdate = true),
+    update: null,
+  };
+  addObject(o);
+  return o;
+};
+
 const sphere = (x, y, z, radius, segments = 20) => {
   return addPrimitive(
     { x, y, z },
@@ -145,4 +180,15 @@ const remove = (obj) => scene.remove(obj.t);
 
 const m = THREE.MathUtils;
 
-export { addObject, cube, rect, circle, plane, sphere, glb, remove, m };
+export {
+  addObject,
+  cube,
+  rect,
+  circle,
+  plane,
+  canvasPlane,
+  sphere,
+  glb,
+  remove,
+  m,
+};

@@ -9,6 +9,7 @@ import {
   rect,
   circle,
   plane,
+  canvasPlane,
   sphere,
   glb,
   remove,
@@ -17,13 +18,15 @@ import {
 
 import { setup, getSlider, setButton } from "./midi";
 
+import { p5Setup } from "./p5Setup.js";
+
 const isPreview = window.name === "preview";
 
 const errorDisplay = document.getElementById("error-display");
 if (!isPreview) {
   errorDisplay.remove();
 }
-
+const threeCanvas = document.getElementById("three-canvas");
 const hydraCanvas = document.getElementById("hydra-canvas");
 const hydra = new Hydra({
   canvas: hydraCanvas,
@@ -69,4 +72,7 @@ socket.on("viewMessage", async (msg) => {
 });
 
 //// Midi Setup
-setup();
+// setup();
+
+//// p5 Setup
+p5Setup();
