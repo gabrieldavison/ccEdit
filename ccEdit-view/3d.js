@@ -129,6 +129,8 @@ const canvasPlane = (
   );
   const mat = new THREE.MeshBasicMaterial({
     map: texture,
+    transparent: true,
+    depthTest: false,
   });
   const objReference = new THREE.Mesh(geom, mat);
   scene.add(objReference);
