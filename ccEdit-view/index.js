@@ -16,9 +16,13 @@ import {
   m,
 } from "./3d";
 
+import { start, stop, kill, killAll, triggerSeq } from "./temporal2";
+
 import { setup, getSlider, setButton } from "./midi";
 
 import { p5Setup } from "./p5Setup.js";
+
+const sb = (someParam) => {};
 
 const isPreview = window.name === "preview";
 
@@ -76,3 +80,6 @@ socket.on("viewMessage", async (msg) => {
 
 //// p5 Setup
 p5Setup();
+
+/// temporal 2 setup
+start();

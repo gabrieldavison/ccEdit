@@ -1,0 +1,49 @@
+sb(1)
+
+w.z = triggerSeq([() => console.log("1"), () => console.log("2")], 500)
+
+kill()
+
+window.p5Draw = (p) => {
+    p.clear()
+    p.rectMode(p.CENTER);
+    p.fill("rgba(0,0,0,0)");
+    p.stroke(255);
+    const s = 200;
+    let i = s;
+    while (i > 0) {
+      i -= 10;
+      const offSet = Math.random() * 20;
+      // p.rect(p.windowWidth / 2, p.windowHeight / 2,i + offSet, i + offSet);
+      p.rect(p.windowWidth / 2, p.windowHeight / 2, i, i);
+    }
+};
+
+window.p5Draw = (p) => {
+    p.clear()
+    p.rectMode(p.CENTER);
+    p.fill("rgba(0,0,0,0)");
+    p.stroke(255);
+    const s = 200;
+    let i = s;
+    while (i > 0) {
+      i -= 10;
+      const offSet = Math.random() * 200;
+      p.rect(p.windowWidth / 2, p.windowHeight / 2,i + offSet, i + offSet);
+      // p.rect(p.windowWidth / 2, p.windowHeight / 2, i, i);
+    }
+};
+
+
+a(10).forEach((_,i) => {
+  let s = canvasPlane(0,0,-((i*10)+150), threeCanvas.width, threeCanvas.height)
+  s.t.rotation.x += i*12
+  s.update = o => {
+    o.t.rotation.x += 0.01
+    o.t.rotation.y += 0.01
+    // o.t.translateZ(0.3)
+  }
+})
+
+
+src(s0).diff(o0).out()

@@ -18,7 +18,7 @@ export default function ({
   togglePreviewMode,
 }) {
   // Utils
-  const { send } = useSocket();
+  const { send, saveEditorState, loadEditorState, loadedState } = useSocket();
 
   const getSelection = () => {
     const r = view.state.selection.ranges[0];
@@ -39,8 +39,39 @@ export default function ({
     localStorage.setItem("editorContent", s);
   };
 
+  // Save buffer to text file on disk via server
+  const saveBuffer = (slot) => {
+    const editorState = getBuffer();
+    saveEditorState(slot, editorState);
+  };
+
+  const loadBuffer = (slot) => {
+    loadEditorState(slot);
+  };
+
   const broadcast = (s) => {
-    console.log(previewMode);
+    const trimmedS = s.trim();
+    const sbRe = /sb\([0-9]+\)/;
+    const isCallToSB = sbRe.test(trimmedS);
+    if (isCallToSB) {
+      const bufferNumber = s.match(/\d+/)[0];
+      // Check number is not empty string i.e. no match
+      if (bufferNumber !== "") {
+        saveBuffer(Number(bufferNumber));
+      }
+      return;
+    }
+    const lbRe = /lb\([0-9]+\)/;
+    const isCallToLB = lbRe.test(trimmedS);
+    if (isCallToLB) {
+      const bufferNumber = s.match(/\d+/)[0];
+      // Check number is not empty string i.e. no match
+      if (bufferNumber !== "") {
+        loadBuffer(Number(bufferNumber));
+      }
+      return;
+    }
+
     saveToLocalStorage(getBuffer());
     send(s, previewMode);
   };
@@ -53,7 +84,7 @@ export default function ({
     while (startLine > 1 && view.state.doc.line(startLine).text !== "") {
       startLine--;
     }
-    const numLines = view.state.doc.text.length;
+    const numLines = view.state.doc.lines;
     while (endLine < numLines && view.state.doc.line(endLine).text !== "") {
       endLine++;
     }
@@ -110,6 +141,17 @@ export default function ({
     extensions: [javascript(), vim(), myKeys()],
     value: code,
   });
+
+  useEffect(() => {
+    if (view && loadedState !== "") {
+      console.log("condition met");
+      console.log(loadedState);
+      let transaction = view.state.update({
+        changes: { from: 0, to: view.state.doc.length, insert: loadedState },
+      });
+      view.dispatch(transaction);
+    }
+  }, [loadedState]);
 
   useEffect(() => {
     if (editor.current) {
