@@ -131,6 +131,7 @@ const canvasPlane = (
     map: texture,
     transparent: true,
     depthTest: false,
+    side: THREE.DoubleSide,
   });
   const objReference = new THREE.Mesh(geom, mat);
   scene.add(objReference);
@@ -155,13 +156,16 @@ const sphere = (x, y, z, radius, segments = 20) => {
 };
 
 // glb display
-
-const glb = async (name, initFn = () => {}) => {
+// When you use this one it must be async
+const glb = async (x, y, z, name, initFn = () => {}) => {
   const glbMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
 
   const loader = new GLTFLoader();
   const model = await loader.loadAsync(name);
   const obj = model.scene;
+  obj.position.x = x;
+  obj.position.y = y;
+  obj.position.z = z;
   scene.add(obj);
   obj.traverse(function (child) {
     if (child instanceof THREE.Mesh) {

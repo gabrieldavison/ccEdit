@@ -6,6 +6,8 @@ const { Server } = require("socket.io");
 const httpServer = createServer();
 const fs = require("fs");
 
+const writeable = true;
+
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
@@ -25,10 +27,12 @@ io.on("connection", (socket) => {
   socket.on("slotMessage", (msg) => {
     const f = __dirname + "/slots/" + msg.slot + ".txt";
     if (msg.action === "save") {
-      fs.writeFile(f, msg.state, (content, err) => {
-        console.log(content);
-        console.log("wrote slot");
-      });
+      if (writeable) {
+        fs.writeFile(f, msg.state, (content, err) => {
+          console.log(content);
+          console.log("wrote slot");
+        });
+      }
     } else {
       fs.readFile(f, function (err, data) {
         const d = data.toString();

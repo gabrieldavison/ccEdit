@@ -140,6 +140,7 @@ export default function ({
     container: editor.current,
     extensions: [javascript(), vim(), myKeys()],
     value: code,
+    lineWrapping: true,
   });
 
   useEffect(() => {

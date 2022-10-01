@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function () {
   const [queue, setQueue] = useState([]);
-  const [previewMode, setPreviewMode] = useState(true);
+  const [previewMode, setPreviewMode] = useState(false);
   const togglePreviewMode = () => {
     setPreviewMode(!previewMode);
   };

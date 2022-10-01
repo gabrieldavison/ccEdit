@@ -22,6 +22,8 @@ import { setup, getSlider, setButton } from "./midi";
 
 import { p5Setup } from "./p5Setup.js";
 
+import * as models from "./models";
+
 const sb = (someParam) => {};
 
 const isPreview = window.name === "preview";
@@ -83,3 +85,6 @@ p5Setup();
 
 /// temporal 2 setup
 start();
+
+/// Util
+const rand = (fn, prob) => () => Math.random() < prob ? fn() : false;

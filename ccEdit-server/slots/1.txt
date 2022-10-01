@@ -1,49 +1,109 @@
 sb(1)
 
-w.z = triggerSeq([() => console.log("1"), () => console.log("2")], 500)
+r()
 
-kill()
+hush()
 
-window.p5Draw = (p) => {
+// DECLARE
+
+w.a = true
+w.p5Draw = (p) => {
+    p.frameRate(10)
     p.clear()
-    p.rectMode(p.CENTER);
+    p.background(0);
     p.fill("rgba(0,0,0,0)");
-    p.stroke(255);
-    const s = 200;
-    let i = s;
+    p.stroke(250);
+    p.strokeWeight(2);
+    const maxSize = p.height / 1.1
+    let i = maxSize;
     while (i > 0) {
       i -= 10;
-      const offSet = Math.random() * 20;
-      // p.rect(p.windowWidth / 2, p.windowHeight / 2,i + offSet, i + offSet);
-      p.rect(p.windowWidth / 2, p.windowHeight / 2, i, i);
+      const centering = maxSize /2
+      const offset = Math.random() * 10;
+      w.a ? 
+        p.rect((p.width / 2) - centering, (p.height / 2) - centering, i, i)
+        : p.rect((p.width / 2) - centering , (p.height / 2) - centering, i+offset, i+offset);
     }
-};
+}
+w.moveLines = () => {
+  triggerSeq([() => w.a = !w.a,() => w.a = !w.a],600)
+}
+w.initBox = () => src(s1).modulate(osc(100, 0.01).pixelate(10),0.1).out() // init
+w.oscLines = () => src(s1).modulate(osc(100, 0.01).pixelate(500),0.1).out() // init
+w.spreadOscLines = () => {
+  src(s1).modulate(osc(100, 0.01).pixelate(100),0.4).out()
+} 
+w.spreadOscLines2 = () => {
+  src(s1).modulate(osc(100, 0.01).pixelate(200),0.4).modulate(osc(10).diff(o0).rotate(25)).out()
+} 
+w.spreadOscLines3 = () => {
+  src(s1).modulate(osc(100, 0.01).pixelate(200),0.4)
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25)).out()
+} 
+w.seqSpreadLines = () => {
+  triggerSeq([rand(w.spreadOscLines2,0.5),
+              rand(w.spreadOscLines3,0.5)], 400)
+}
+w.spreadOscLines2Invert = () => {
+  src(s1).modulate(osc(100, 0.01).pixelate(200),0.4).modulate(osc(10).diff(o0).rotate(25)).invert().out()
+} 
+w.spreadOscLines3Invert = () => {
+  src(s1).modulate(osc(100, 0.01).pixelate(200),0.4)
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25)).invert().out()
+} 
+w.seqSpreadLinesInvert = () => {
+  triggerSeq([rand(w.spreadOscLines2,0.6),
+              rand(w.spreadOscLines2Invert,0.1),
+              rand(w.spreadOscLines3,0.6),
+              rand(w.spreadOscLines3Invert,0.1)], 400)
+}
 
-window.p5Draw = (p) => {
-    p.clear()
-    p.rectMode(p.CENTER);
-    p.fill("rgba(0,0,0,0)");
-    p.stroke(255);
-    const s = 200;
-    let i = s;
-    while (i > 0) {
-      i -= 10;
-      const offSet = Math.random() * 200;
-      p.rect(p.windowWidth / 2, p.windowHeight / 2,i + offSet, i + offSet);
-      // p.rect(p.windowWidth / 2, p.windowHeight / 2, i, i);
-    }
-};
+// TRIGGER
+
+w.initBox()
+
+w.moveLines()
+
+w.oscLines()
+
+w.spreadOscLines()
+
+w.spreadOscLines2()
+
+w.spreadOscLines3()
+
+w.seqSpreadLines()
+
+w.seqSpreadLinesInvert()
+
+killAll()
 
 
-a(10).forEach((_,i) => {
-  let s = canvasPlane(0,0,-((i*10)+150), threeCanvas.width, threeCanvas.height)
-  s.t.rotation.x += i*12
-  s.update = o => {
-    o.t.rotation.x += 0.01
-    o.t.rotation.y += 0.01
-    // o.t.translateZ(0.3)
-  }
-})
+
+src(s1).modulate(osc(100, 0.01).pixelate(200),0.4)
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25)).out()
 
 
-src(s0).diff(o0).out()
+// With this one I need some variation to give it a bit mor interest
+src(s1).modulate(osc(100, 0.01).pixelate(100),0.1).modulate(osc(10).pixelate(20).rotate(90)).diff(src(o0)).out()
+
+
+
+
+
+//// SCRATCH
+
+w.p1 = canvasPlane(0,0,-50, 200,100)
+w.p1.update = (o) => {
+  o.t.rotation.y += 0.01
+  o.t.rotation.x += 0.01
+}

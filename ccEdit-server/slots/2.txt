@@ -1,0 +1,88 @@
+sb(2)
+
+r()
+
+hush()
+
+remove(w.logo)
+
+killAll()
+
+
+// DECLARE
+killAll()
+w.logo = await glb(0,0,-7,models.logo)
+w.logo.update = (o) => {
+  o.t.rotation.y += 0.001
+}
+w.spreadOscLines2 = () => {
+  src(s0).modulate(osc(100, 0.01).pixelate(200),0.4)
+    .modulate(osc(500).diff(o0).rotate(25),0.05)
+    .diff(src(s0)).out()
+} 
+w.spreadOscLines3 = () => {
+  src(s0).modulate(osc(100, 0.01).pixelate(200),0.4)
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25))
+    .modulate(osc(10).diff(o0).rotate(25)).diff(src(s0)).out()
+} 
+w.seqSpreadLines = () => {
+  triggerSeq([rand(w.spreadOscLines2,0.5),
+              rand(w.spreadOscLines3,0.5)], 400)
+}
+w.oscLogo = async () => {
+  killAll()
+  remove(w.logo)
+  w.logo = await glb(0,0,-5,models.logo)
+  src(s0).modulate(osc(10000), 0.01)
+    .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).out()
+}
+w.oscLogoSeq1 = () => {
+  src(s0).modulate(osc(10000), 0.01)
+    .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).out()
+}
+w.oscLogoSeq2 = () => {
+  src(s0).modulate(osc(1000),0.01).add(src(o0).modulate(osc(10)), 0.7).out()
+}
+w.oscLogoSeq3 = () => {
+  src(s0).modulate(voronoi(3), 0.3).out()
+}
+w.oscLogoSeq4 = () => {
+  src(s0).modulate(noise(5), 0.2).out()
+}
+w.oscLogoSeq = () => {
+  triggerSeq([rand(w.oscLogoSeq1, 0.5),
+            rand(w.oscLogoSeq2, 0.5),
+            rand(w.oscLogoSeq3, 0.5),
+            rand(w.oscLogoSeq4, 0.5)],
+            400)
+}
+// this is the init function
+w.seqSpreadLines()
+
+
+
+// TRIGGER
+
+w.seqSpreadLines()
+
+await w.oscLogo()
+
+w.oscLogoSeq3()
+
+w.oscLogoSeq()
+
+
+
+
+// SCRATCH
+
+src(s0).modulate(osc(10000), 0.01)
+    .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).diff(osc(1000)).contrast(20).out()
+
+src(s0).modulate(osc(1000),0.01).add(src(o0).modulate(osc(10)), 0.7).diff(osc(1000)).contrast(20).out()
+
+src(s0).modulate(voronoi(3), 0.6).diff(osc(1000)).contrast(20).out()
+
+src(s0).modulate(noise(5), 0.2).pixelate(200,200).diff(osc(1000)).contrast(20).out()
