@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "p5": "^1.4.2",
-    "webmidi": "^3.0.21"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-basic-ssl": "^0.1.2"
-  }
-}
