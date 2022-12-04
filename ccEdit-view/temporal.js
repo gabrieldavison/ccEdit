@@ -25,7 +25,6 @@ t.osc = (v, mag, freq, name = counter) => {
   if (timeFunctions[name]) delete timeFunctions[name];
   const fn = (_, now) => {
     const s = Math.sin((now / 1000) * freq * Math.PI * 2) * mag;
-    console.log(oldV + Number(s.toFixed(2)));
     w[v] = oldV + Number(s.toFixed(2));
   };
   addTimeFunc(name, fn);

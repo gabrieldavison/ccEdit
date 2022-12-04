@@ -150,9 +150,27 @@ const sphere = (x, y, z, radius, segments = 20) => {
   return addPrimitive(
     { x, y, z },
     THREE.SphereGeometry,
-    [radius, 20],
+    [radius, segments, segments],
     THREE.MeshPhongMaterial
   );
+};
+
+const wireSphere = (x, y, z, radius, segments = 20) => {
+  const geom = new THREE.SphereGeometry(radius, segments, segments);
+  const wireGeom = new THREE.WireframeGeometry(geom);
+  const mat = new THREE.MeshBasicMaterial({
+    wireframe: true,
+    wireframeLinewidth: 2,
+  });
+  const objReference = new THREE.Mesh(geom, mat);
+  scene.add(objReference);
+  objReference.position.set(x, y, z);
+  const o = {
+    t: objReference,
+    update: null,
+  };
+  addObject(o);
+  return o;
 };
 
 // glb display
@@ -194,6 +212,7 @@ export {
   plane,
   canvasPlane,
   sphere,
+  wireSphere,
   glb,
   remove,
   m,

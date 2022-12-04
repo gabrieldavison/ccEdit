@@ -1,0 +1,105 @@
+sb(3)
+
+r()
+
+hush()
+
+killAll()
+
+// DECLARE
+w.downSize = () => {
+  w.a = 0.998
+}
+w.upSize = () => {
+  w.a = 1.002
+}
+w.smallBallBigPix = () => {
+  remove(w.shape)
+  w.a = 1
+  w.shape = wireSphere(0,0,-10, 5, 8)
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001
+    o.t.rotation.y += 0.0001
+    o.t.scale.multiplyScalar(w.a)
+  }
+  src(s0).pixelate(10,10).blend(src(o0)).blend(src(o0)).blend(src(o0)).out()
+}
+w.bigBallBigPix = () => {
+  remove(w.shape)
+  w.shape = wireSphere(0,0,-10, 10, 8)
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001
+    o.t.rotation.y += 0.0001
+  }
+  src(s0).pixelate(10,10).blend(src(o0)).blend(src(o0)).blend(src(o0)).out()
+}
+w.movingBallThinPix = () => {
+  remove(w.shape)
+  w.shape = wireSphere(0,0,-10, 5, 8)
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001
+    o.t.rotation.y += 0.0001
+    o.t.scale.multiplyScalar(w.a)
+  }
+  killAll()
+  triggerSeq([w.upSize,w.downSize], 10000)
+  src(s0).pixelate(20,50).blend(src(o0)).blend(src(o0)).blend(src(o0)).out()
+}
+w.bigBallThinPix = () => {
+  remove(w.shape)
+  w.shape = wireSphere(0,0,-10, 10, 8)
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0002
+    o.t.rotation.y += 0.0002
+    // o.t.scale.multiplyScalar(w.a)
+  }
+  // triggerSeq([w.upSize,w.downSize], 10000)
+  src(s0).pixelate(20,50).blend(src(o0)).blend(src(o0)).blend(src(o0)).out()
+}
+w.bigBallSmallPix = () => {
+  remove(w.shape)
+  w.shape = wireSphere(0,0,-10, 10, 8)
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0004
+    o.t.rotation.y += 0.0004
+  }
+  src(s0).pixelate(100,100).blend(src(o0)).blend(src(o0)).out()
+}
+w.ballSequence = () => {
+  triggerSeq([rand(w.movingBallThinPix,0.5),
+             rand(w.bigBallThinPix,0.5),
+             rand(w.bigBallSmallPix,0.3),
+             rand(w.bigBallBigPix,0.8)], 400)
+}
+w.end = () => {
+  remove(w.shape)
+  w.a = 1
+  w.shape = wireSphere(0,0,-10, 4, 8)
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001
+    o.t.rotation.y += 0.0001
+    o.t.scale.multiplyScalar(w.a)
+  }
+  src(s0).pixelate(30,30).blend(src(o0)).blend(src(o0)).blend(src(o0)).out()
+}
+
+// TRIGGER
+
+r()
+
+w.smallBallBigPix()
+
+w.bigBallBigPix()
+
+w.movingBallThinPix()
+
+w.bigBallThinPix()
+
+w.bigBallSmallPix() //ignore
+
+w.ballSequence()
+
+killAll()
+
+w.end()
+

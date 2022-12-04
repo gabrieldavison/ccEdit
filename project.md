@@ -1,22 +1,13 @@
 # TODO
 
-
-- API for easy midi binding / unbinding
-
-- flesh out temporal api with the functions in my notes
-
-- make the threejs api more ergonomic
-    - Start with spawning / manipulating objects
-    - Work out the best way to make mutable changes to the render loop.
-    - Think about camera manipulation
-
-- fix temporal features
-    - ?think these are actually working now and it's the api that's a bit wonky.
-
 - Replace all url imports with npm ones or download them into lib folder
 
 ## Wishlist
 
+- Replace raw 3js with a-frame
+    - Need to design a new 3D api arounf this but I think it will be more ergonomic in the long run
+- API for easy midi binding / unbinding
+    - Havent ended up needing midi much since adding sequencing feature
 - A way that makes managing the threejs scene more ergonomic
 - Shouldn't have to worry about assigning / keeping track of things in the graph
 - This is the same for the temporal stuff

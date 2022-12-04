@@ -1,149 +1,3 @@
-/// Rotating Cube
-
-w.cbe = cube(100, 0, 0, -100);
-
-w.cbe.update = (o) => {
-  o.t.rotation.x += 0.001;
-  o.t.rotation.y += 0.0005;
-};
-
-/// Big Spinning 3D img
-
-w.myObj = await glb(testglb);
-
-w.myObj.update = (obj) => {
-  obj.t.rotation.x += 0.001;
-};
-
-//////////////////////////
-
-w.cbe = cube(0, 0, -100, 100);
-
-w.cbe.update = (o) => {
-  o.t.rotation.x += 0.01;
-  o.t.rotation.y += 0.01;
-};
-
-w.cbe.t.position.z = -200;
-
-wa(10);
-
-src(s0).repeatX(4).repeatY(4).diff(src(o0)).out();
-
-osc(wa()).out();
-
-///////////////////////
-
-window.p5Draw = (p) => {
-  p.background(0);
-  p.rectMode(p.CENTER);
-  p.fill("rgba(0,0,0,0)");
-  p.stroke(255);
-  const s = 200;
-  let i = s;
-  while (i > 0) {
-    i -= 10;
-    const offSet = Math.random() * 20;
-    p.rect(p.windowWidth / 2, p.windowHeight / 2, i + offSet, i + offSet);
-    // p.rect(p.windowWidth / 2, p.windowHeight / 2, i, i);
-  }
-};
-
-a(10).forEach((_, i) => {
-  let s = canvasPlane(
-    0,
-    0,
-    -(i * 10 + 150),
-    threeCanvas.width,
-    threeCanvas.height
-  );
-  s.update = (o) => {
-    o.t.rotation.x += 0.01;
-    o.t.rotation.y += 0.01;
-    // o.t.translateZ(0.3)
-  };
-});
-
-src(s0).out();
-
-///////////////// with buffers
-
-lb(1);
-
-w.z = triggerSeq([() => console.log("1"), () => console.log("2")], 500);
-
-kill();
-
-window.p5Draw = (p) => {
-  p.clear();
-  p.rectMode(p.CENTER);
-  p.fill("rgba(0,0,0,0)");
-  p.stroke(255);
-  const s = 200;
-  let i = s;
-  while (i > 0) {
-    i -= 10;
-    const offSet = Math.random() * 20;
-    // p.rect(p.windowWidth / 2, p.windowHeight / 2,i + offSet, i + offSet);
-    p.rect(p.windowWidth / 2, p.windowHeight / 2, i, i);
-  }
-};
-
-window.p5Draw = (p) => {
-  p.clear();
-  p.rectMode(p.CENTER);
-  p.fill("rgba(0,0,0,0)");
-  p.stroke(255);
-  const s = 200;
-  let i = s;
-  while (i > 0) {
-    i -= 10;
-    const offSet = Math.random() * 200;
-    p.rect(p.windowWidth / 2, p.windowHeight / 2, i + offSet, i + offSet);
-    // p.rect(p.windowWidth / 2, p.windowHeight / 2, i, i);
-  }
-};
-
-a(10).forEach((_, i) => {
-  let s = canvasPlane(
-    0,
-    0,
-    -(i * 10 + 150),
-    threeCanvas.width,
-    threeCanvas.height
-  );
-  s.t.rotation.x += i * 12;
-  s.update = (o) => {
-    o.t.rotation.x += 0.01;
-    o.t.rotation.y += 0.01;
-    // o.t.translateZ(0.3)
-  };
-});
-
-src(s0).diff(o0).out();
-
-////////
-
-r();
-
-w.a = await glb(0, 0, -5, models.logo);
-
-w.a.update = (o) => {
-  o.t.rotation.y += 0.01;
-};
-
-let a = () => src(s0).modulate(osc(100)).contrast(2).out();
-let b = () =>
-  src(s0)
-    .modulate(osc(1))
-    .diff(src(o0).modulate(osc(10000)), 0.1)
-    .contrast(2)
-    .out();
-let c = () => src(s0).modulate(voronoi(8)).contrast(2).out();
-triggerSeq([a, b, c], 1000);
-
-killAll();
-
 //////////////////////// FEEL SO ///////////////////////////////////
 
 sb(1);
@@ -468,3 +322,121 @@ src(s0)
   .diff(osc(1000))
   .contrast(20)
   .out();
+
+/////////////////////////// IJWLY ////////////////////////////////
+
+sb(3);
+
+r();
+
+hush();
+
+killAll();
+
+// DECLARE
+
+src(s0).pixelate(200, 200).blend(src(o0)).blend(src(o0)).blend(src(o0)).out();
+
+src(s0).pixelate(15, 15).blend(src(o0)).blend(src(o0)).blend(src(o0)).out();
+
+src(s0).pixelate(50, 50).out();
+
+w.downSize = () => {
+  w.a = 0.998;
+};
+w.upSize = () => {
+  w.a = 1.002;
+};
+w.smallBallBigPix = () => {
+  w.a = 1;
+  w.shape = wireSphere(0, 0, -10, 5, 8);
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001;
+    o.t.rotation.y += 0.0001;
+    o.t.scale.multiplyScalar(w.a);
+  };
+  src(s0).pixelate(10, 10).blend(src(o0)).blend(src(o0)).blend(src(o0)).out();
+};
+w.bigBallBigPix = () => {
+  remove(w.shape);
+  w.shape = wireSphere(0, 0, -10, 10, 8);
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001;
+    o.t.rotation.y += 0.0001;
+  };
+  src(s0).pixelate(10, 10).blend(src(o0)).blend(src(o0)).blend(src(o0)).out();
+};
+w.movingBallThinPix = () => {
+  remove(w.shape);
+  w.shape = wireSphere(0, 0, -10, 5, 8);
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001;
+    o.t.rotation.y += 0.0001;
+    o.t.scale.multiplyScalar(w.a);
+  };
+  killAll();
+  triggerSeq([w.upSize, w.downSize], 10000);
+  src(s0).pixelate(20, 50).blend(src(o0)).blend(src(o0)).blend(src(o0)).out();
+};
+w.bigBallThinPix = () => {
+  remove(w.shape);
+  w.shape = wireSphere(0, 0, -10, 10, 8);
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0002;
+    o.t.rotation.y += 0.0002;
+    // o.t.scale.multiplyScalar(w.a)
+  };
+  // triggerSeq([w.upSize,w.downSize], 10000)
+  src(s0).pixelate(20, 50).blend(src(o0)).blend(src(o0)).blend(src(o0)).out();
+};
+w.bigBallSmallPix = () => {
+  remove(w.shape);
+  w.shape = wireSphere(0, 0, -10, 10, 8);
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0004;
+    o.t.rotation.y += 0.0004;
+  };
+  src(s0).pixelate(100, 100).blend(src(o0)).blend(src(o0)).out();
+};
+w.ballSequence = () => {
+  triggerSeq(
+    [
+      rand(w.movingBallThinPix, 0.5),
+      rand(w.bigBallThinPix, 0.5),
+      rand(w.bigBallSmallPix, 0.3),
+      rand(w.bigBallBigPix, 0.8),
+    ],
+    400
+  );
+};
+w.end = () => {
+  remove(w.shape);
+  w.a = 1;
+  w.shape = wireSphere(0, 0, -10, 4, 8);
+  w.shape.update = (o) => {
+    o.t.rotation.x += 0.0001;
+    o.t.rotation.y += 0.0001;
+    o.t.scale.multiplyScalar(w.a);
+  };
+  src(s0).pixelate(30, 30).blend(src(o0)).blend(src(o0)).blend(src(o0)).out();
+};
+
+// TRIGGER
+
+r();
+
+w.smallBallBigPix();
+
+w.bigBallBigPix();
+
+w.movingBallThinPix();
+
+w.bigBallThinPix();
+
+w.bigBallSmallPix(); //ignore
+
+w.ballSequence();
+
+w.end();
+
+killAll();

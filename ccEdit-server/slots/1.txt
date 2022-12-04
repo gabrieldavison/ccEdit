@@ -1,10 +1,5 @@
-sb(1)
-
-r()
-
-hush()
-
 // DECLARE
+r()
 
 w.a = true
 w.p5Draw = (p) => {
@@ -63,6 +58,7 @@ w.seqSpreadLinesInvert = () => {
               rand(w.spreadOscLines3,0.6),
               rand(w.spreadOscLines3Invert,0.1)], 400)
 }
+w.initBox()
 
 // TRIGGER
 
@@ -86,24 +82,6 @@ killAll()
 
 
 
-src(s1).modulate(osc(100, 0.01).pixelate(200),0.4)
-    .modulate(osc(10).diff(o0).rotate(25))
-    .modulate(osc(10).diff(o0).rotate(25))
-    .modulate(osc(10).diff(o0).rotate(25))
-    .modulate(osc(10).diff(o0).rotate(25)).out()
+lb(2)
 
-
-// With this one I need some variation to give it a bit mor interest
-src(s1).modulate(osc(100, 0.01).pixelate(100),0.1).modulate(osc(10).pixelate(20).rotate(90)).diff(src(o0)).out()
-
-
-
-
-
-//// SCRATCH
-
-w.p1 = canvasPlane(0,0,-50, 200,100)
-w.p1.update = (o) => {
-  o.t.rotation.y += 0.01
-  o.t.rotation.x += 0.01
-}
+sb(1)

@@ -11,12 +11,13 @@ import {
   plane,
   canvasPlane,
   sphere,
+  wireSphere,
   glb,
   remove,
   m,
 } from "./3d";
 
-import { start, stop, kill, killAll, triggerSeq } from "./temporal2";
+import { start, stop, kill, killAll, triggerSeq, oscillate } from "./temporal2";
 
 import { setup, getSlider, setButton } from "./midi";
 

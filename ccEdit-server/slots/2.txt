@@ -1,13 +1,4 @@
-sb(2)
-
 r()
-
-hush()
-
-remove(w.logo)
-
-killAll()
-
 
 // DECLARE
 killAll()
@@ -34,11 +25,24 @@ w.seqSpreadLines = () => {
 w.oscLogo = async () => {
   killAll()
   remove(w.logo)
-  w.logo = await glb(0,0,-5,models.logo)
+  w.logo = await glb(0,0,-6,models.logo)
+  src(s0).modulate(osc(10000), 0.01)
+    .modulate(voronoi(10).modulate(osc(10)).scale(1.5).pixelate(200,200),0.1).out()
+}
+w.oscLogoSpin = async () => {
+  killAll()
+  remove(w.logo)
+  w.logo = await glb(0,0,-6,models.logo)
+  w.logo.update = (o) => {
+    o.t.rotation.y += 0.001
+  }
   src(s0).modulate(osc(10000), 0.01)
     .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).out()
 }
 w.oscLogoSeq1 = () => {
+  w.logo.update = (o) => {
+    o.t.rotation.y += 0.001
+  }
   src(s0).modulate(osc(10000), 0.01)
     .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).out()
 }
@@ -58,31 +62,62 @@ w.oscLogoSeq = () => {
             rand(w.oscLogoSeq4, 0.5)],
             400)
 }
-// this is the init function
+w.oscLogoSpinWash = () => {
+  killAll()
+  src(s0).modulate(osc(10000), 0.01)
+  .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).modulate(src(s0), 0.1).out()
+}
+w.oscLogoSeq1Inv = () => {
+  w.logo.update = (o) => {
+    o.t.rotation.y += 0.001
+  }
+  src(s0).modulate(osc(10000), 0.01)
+    .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).diff(osc(1000)).contrast(20).out()
+}
+w.oscLogoSeq2Inv = () => {
+  src(s0).modulate(osc(1000),0.01).add(src(o0).modulate(osc(10)), 0.7).diff(osc(1000)).contrast(20).out()
+}
+w.oscLogoSeq3Inv = () => {
+  src(s0).modulate(voronoi(3), 0.6).diff(osc(1000)).contrast(20).out()
+}
+w.oscLogoSeq4Inv = () => {
+  src(s0).modulate(noise(5), 0.2).pixelate(200,200).diff(osc(1000)).contrast(20).out()
+}
+w.oscLogoSeqInv = () => {
+  killAll()
+  triggerSeq([rand(w.oscLogoSeq1Inv, 0.5),
+            rand(w.oscLogoSeq2Inv, 0.5),
+            rand(w.oscLogoSeq3Inv, 0.5),
+            rand(w.oscLogoSeq4Inv, 0.5)],
+            400)
+}
 w.seqSpreadLines()
 
 
 
 // TRIGGER
 
-w.seqSpreadLines()
+w.seqSpreadLines() // init
 
 await w.oscLogo()
 
-w.oscLogoSeq3()
-
 w.oscLogoSeq()
 
+await w.oscLogoSpin()
+
+w.oscLogoSpinWash()
+
+w.oscLogoSeqInv()
+
+killAll()
+
+w.oscLogoSeq4Inv()
+
+w.oscLogoSeq1Inv()
 
 
 
-// SCRATCH
+lb(3)
 
-src(s0).modulate(osc(10000), 0.01)
-    .modulate(voronoi(10).modulate(osc(10)).pixelate(200,200),0.1).diff(osc(1000)).contrast(20).out()
 
-src(s0).modulate(osc(1000),0.01).add(src(o0).modulate(osc(10)), 0.7).diff(osc(1000)).contrast(20).out()
-
-src(s0).modulate(voronoi(3), 0.6).diff(osc(1000)).contrast(20).out()
-
-src(s0).modulate(noise(5), 0.2).pixelate(200,200).diff(osc(1000)).contrast(20).out()
+sb(2)
